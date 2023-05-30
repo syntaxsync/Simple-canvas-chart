@@ -1,5 +1,33 @@
-const drawLineChart = (id, data, labels, options) => {
-  const { width: canvas_width, height: canvas_height, strokeColor } = options;
+const calculateMovingAverage = (data, period) => {
+  const ma = [];
+
+  for (let i = 0; i < data.length; i++) {
+    if (i >= period) {
+      const sum = data.slice(i - period, i).reduce((a, b) => a + b, 0);
+      ma.push(sum / period);
+    }
+  }
+
+  return ma;
+};
+
+const drawMAChart = (
+  id,
+  data,
+  labels,
+  options = {
+    width: 600,
+    height: 400,
+    strokeColor: "green",
+    period: 20,
+  }
+) => {
+  const {
+    width: canvas_width,
+    height: canvas_height,
+    strokeColor,
+    period,
+  } = options;
 
   const canvas = document.createElement("canvas");
   canvas.id = id;
@@ -20,17 +48,8 @@ const drawLineChart = (id, data, labels, options) => {
   const chart_height = canvas_height - padding * 2;
 
   // calculating moving average
-  const ma = [];
-  const period = 20;
 
-  for (let i = 0; i < data.length; i++) {
-    if (i >= period) {
-      const sum = data.slice(i - period, i).reduce((a, b) => a + b, 0);
-      ma.push(sum / period);
-    }
-  }
-
-  const values = ma;
+  const values = calculateMovingAverage(data, period);
   const names = labels.slice(period);
 
   // calculating max and min values
@@ -44,7 +63,11 @@ const drawLineChart = (id, data, labels, options) => {
   ctx.font = "16px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("20 Days Moving Average(MA)", canvas_width / 2, padding / 2);
+  ctx.fillText(
+    `${period} Days Moving Average(MA)`,
+    canvas_width / 2,
+    padding / 2
+  );
 
   ctx.font = "12px Arial";
   ctx.fillText(
@@ -185,9 +208,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const movingAverage = historicalData.map((d) => d.close);
   const labels = historicalData.map((d) => d.date.split("T")[0]);
 
-  drawLineChart("chart-demo", movingAverage, labels, {
+  drawMAChart("chart-demo", movingAverage, labels, {
     width: 600,
     height: 400,
     strokeColor: "green",
+    period: 20,
   });
 });
