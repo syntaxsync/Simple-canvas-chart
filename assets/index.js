@@ -8,6 +8,16 @@ const drawLineChart = (id, data, labels, options) => {
 
   document.body.appendChild(canvas);
 
+  const toolkit = document.createElement("div");
+  toolkit.id = "toolkit";
+  toolkit.style.position = "absolute";
+  toolkit.style.padding = "10px";
+  toolkit.style.backgroundColor = "white";
+  toolkit.style.border = "1px solid black";
+  toolkit.style.display = "none";
+
+  document.body.appendChild(toolkit);
+
   const ctx = canvas.getContext("2d");
 
   const padding = 60;
@@ -127,6 +137,28 @@ const drawLineChart = (id, data, labels, options) => {
   }
 
   ctx.stroke();
+
+  // adding event listeners in the above toolkit on data points
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const stepX = chart_width / (data.length - 1);
+    const stepY = chart_height / 5;
+
+    const index = Math.floor((x - padding) / stepX);
+    const value = data[index];
+
+    if (value) {
+      toolkit.style.display = "block";
+      toolkit.style.left = e.pageX + 10 + "px";
+      toolkit.style.top = e.pageY + 10 + "px";
+      toolkit.innerHTML = `<div>Date: ${labels[index]}</div><div>MA(20): ${value}</div>`;
+    } else {
+      toolkit.style.display = "none";
+    }
+  });
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
