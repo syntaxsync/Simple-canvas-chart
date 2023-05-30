@@ -9,7 +9,7 @@ const drawLineChart = (id, data, labels, options) => {
   document.body.appendChild(canvas);
 
   const toolkit = document.createElement("div");
-  toolkit.id = "toolkit";
+  toolkit.className = "toolkit";
   toolkit.style.position = "absolute";
   toolkit.style.padding = "10px";
   toolkit.style.backgroundColor = "white";
@@ -158,6 +158,10 @@ const drawLineChart = (id, data, labels, options) => {
     } else {
       toolkit.style.display = "none";
     }
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    toolkit.style.display = "none";
   });
 };
 

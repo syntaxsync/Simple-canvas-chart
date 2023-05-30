@@ -19,3 +19,16 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
+
+.toolkit {
+  padding: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  display: none;
+  text-decoration: none;
+  color: #24292e;
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
