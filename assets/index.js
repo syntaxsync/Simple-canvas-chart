@@ -14,8 +14,8 @@ const drawLineChart = (id, data, labels, options) => {
   const chart_width = canvas_width - padding * 2;
   const chart_height = canvas_height - padding * 2;
 
-  const max = Math.max(...data);
-  const min = Math.min(...data);
+  const max = Math.ceil(Math.max(...data));
+  const min = Math.floor(Math.min(...data));
 
   // drawing chart title and subtitle
   ctx.save();
@@ -27,7 +27,7 @@ const drawLineChart = (id, data, labels, options) => {
 
   ctx.font = "12px Arial";
   ctx.fillText(
-    "IBM, 2023-05-15 to 2023-05-30",
+    "IBM, 2023-05-15 to 2023-05-31",
     canvas_width / 2,
     padding / 2 + 20
   );
