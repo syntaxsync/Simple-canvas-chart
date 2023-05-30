@@ -27,7 +27,7 @@ const drawLineChart = (id, data, labels, options) => {
 
   ctx.font = "12px Arial";
   ctx.fillText(
-    "IBM, 2021-05-15 to 2021-05-26",
+    "IBM, 2023-05-15 to 2023-05-30",
     canvas_width / 2,
     padding / 2 + 20
   );
