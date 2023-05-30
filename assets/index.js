@@ -201,7 +201,7 @@ const drawMAChart = (
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const historicalData = await fetch("../assets/data.json").then((res) =>
+  const historicalData = await fetch("/assets/data.json").then((res) =>
     res.json()
   );
 
