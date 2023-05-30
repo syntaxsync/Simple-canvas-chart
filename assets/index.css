@@ -21,6 +21,7 @@ body {
 }
 
 .toolkit {
+  position: absolute;
   padding: 10px;
   background-color: #eee;
   border-radius: 5px;

@@ -10,11 +10,6 @@ const drawLineChart = (id, data, labels, options) => {
 
   const toolkit = document.createElement("div");
   toolkit.className = "toolkit";
-  toolkit.style.position = "absolute";
-  toolkit.style.padding = "10px";
-  toolkit.style.backgroundColor = "white";
-  toolkit.style.border = "1px solid black";
-  toolkit.style.display = "none";
 
   document.body.appendChild(toolkit);
 
@@ -24,8 +19,24 @@ const drawLineChart = (id, data, labels, options) => {
   const chart_width = canvas_width - padding * 2;
   const chart_height = canvas_height - padding * 2;
 
-  const max = Math.ceil(Math.max(...data));
-  const min = Math.floor(Math.min(...data));
+  // calculating moving average
+  const ma = [];
+  const period = 20;
+
+  for (let i = 0; i < data.length; i++) {
+    if (i >= period) {
+      const sum = data.slice(i - period, i).reduce((a, b) => a + b, 0);
+      ma.push(sum / period);
+    }
+  }
+
+  const values = ma;
+  const names = labels.slice(period);
+
+  // calculating max and min values
+
+  const max = Math.ceil(Math.max(...values));
+  const min = Math.floor(Math.min(...values));
 
   // drawing chart title and subtitle
   ctx.save();
@@ -73,40 +84,40 @@ const drawLineChart = (id, data, labels, options) => {
   ctx.strokeStyle = "lightgray";
   ctx.setLineDash([5, 5]);
 
-  const stepX = chart_width / (data.length - 1);
+  const stepX = chart_width / (values.length - 1);
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < values.length; i++) {
     ctx.moveTo(padding + i * stepX, padding);
     ctx.lineTo(padding + i * stepX, padding + chart_height);
   }
 
   ctx.stroke();
 
-  // drawing labels for y axis with markers on the left
+  // drawing names for y axis with markers on the left
   ctx.beginPath();
   ctx.fillStyle = "black";
   ctx.font = "12px Arial";
 
   for (let i = 0; i <= 5; i++) {
     ctx.fillText(
-      Math.round(max - (max - min) * (i / 5)),
+      (max - (max - min) * (i / 5)).toFixed(1),
       30,
       padding + i * stepY
     );
   }
 
-  // drawing labels for x axis rotated 45 degrees
+  // drawing names for x axis rotated 45 degrees
   ctx.fillStyle = "#000";
   ctx.font = "12px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < names.length; i++) {
     const x = stepX * i;
     ctx.save();
     ctx.translate(x + padding, canvas_height - padding + 5);
     ctx.rotate(Math.PI / 4);
-    ctx.fillText(labels[i], 0, 0);
+    ctx.fillText(names[i], 0, 0);
     ctx.restore();
   }
 
@@ -118,9 +129,9 @@ const drawLineChart = (id, data, labels, options) => {
   ctx.lineWidth = 2;
   ctx.setLineDash([]);
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < values.length; i++) {
     const x = stepX * i;
-    const y = (chart_height * (max - data[i])) / (max - min);
+    const y = (chart_height * (max - values[i])) / (max - min);
 
     if (i === 0) {
       ctx.moveTo(padding + x, padding + y);
@@ -138,23 +149,24 @@ const drawLineChart = (id, data, labels, options) => {
 
   ctx.stroke();
 
-  // adding event listeners in the above toolkit on data points
+  // adding event listeners in the above toolkit on values points
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const stepX = chart_width / (data.length - 1);
-    const stepY = chart_height / 5;
+    const stepX = chart_width / (values.length - 1);
 
     const index = Math.floor((x - padding) / stepX);
-    const value = data[index];
+    const value = values[index];
 
     if (value) {
       toolkit.style.display = "block";
       toolkit.style.left = e.pageX + 10 + "px";
       toolkit.style.top = e.pageY + 10 + "px";
-      toolkit.innerHTML = `<div>Date: ${labels[index]}</div><div>MA(20): ${value}</div>`;
+      toolkit.innerHTML = `<div>Date: ${
+        names[index]
+      }</div><div>MA(20): ${value.toFixed(2)}</div>`;
     } else {
       toolkit.style.display = "none";
     }
@@ -167,6 +179,166 @@ const drawLineChart = (id, data, labels, options) => {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const data = [
+    {
+      date: "2023-04-17T16:00:00.000000Z",
+      open: 128.3,
+      high: 128.72,
+      low: 126.8,
+      close: 127.82,
+      volume: 3662666,
+    },
+    {
+      date: "2023-04-18T16:00:00.000000Z",
+      open: 128.14,
+      high: 128.68,
+      low: 127.35,
+      close: 127.78,
+      volume: 3193787,
+    },
+    {
+      date: "2023-04-19T16:00:00.000000Z",
+      open: 126.5,
+      high: 126.98,
+      low: 125.3,
+      close: 126.32,
+      volume: 7014368,
+    },
+    {
+      date: "2023-04-20T16:00:00.000000Z",
+      open: 130.15,
+      high: 130.98,
+      low: 125.84,
+      close: 126.36,
+      volume: 9749618,
+    },
+    {
+      date: "2023-04-21T16:00:00.000000Z",
+      open: 126,
+      high: 126.7,
+      low: 125.27,
+      close: 125.73,
+      volume: 6725426,
+    },
+    {
+      date: "2023-04-24T16:00:00.000000Z",
+      open: 125.55,
+      high: 126.05,
+      low: 124.56,
+      close: 125.4,
+      volume: 4043892,
+    },
+    {
+      date: "2023-04-25T16:00:00.000000Z",
+      open: 124.9,
+      high: 126.19,
+      low: 124.76,
+      close: 125.89,
+      volume: 4275396,
+    },
+    {
+      date: "2023-04-26T16:00:00.000000Z",
+      open: 125.81,
+      high: 126.55,
+      low: 125.12,
+      close: 125.85,
+      volume: 4070168,
+    },
+    {
+      date: "2023-04-27T16:00:00.000000Z",
+      open: 126.37,
+      high: 127.02,
+      low: 125.46,
+      close: 126.97,
+      volume: 3204889,
+    },
+    {
+      date: "2023-04-28T16:00:00.000000Z",
+      open: 126.58,
+      high: 127.25,
+      low: 125.64,
+      close: 126.41,
+      volume: 5061247,
+    },
+    {
+      date: "2023-05-01T16:00:00.000000Z",
+      open: 126.35,
+      high: 126.75,
+      low: 126.06,
+      close: 126.09,
+      volume: 2724992,
+    },
+    {
+      date: "2023-05-02T16:00:00.000000Z",
+      open: 126.3,
+      high: 126.45,
+      low: 123.27,
+      close: 125.16,
+      volume: 4445283,
+    },
+    {
+      date: "2023-05-03T16:00:00.000000Z",
+      open: 125.46,
+      high: 125.57,
+      low: 123.26,
+      close: 123.45,
+      volume: 4554212,
+    },
+    {
+      date: "2023-05-04T16:00:00.000000Z",
+      open: 123.03,
+      high: 123.52,
+      low: 121.76,
+      close: 122.57,
+      volume: 4468237,
+    },
+    {
+      date: "2023-05-05T16:00:00.000000Z",
+      open: 123.11,
+      high: 124.1,
+      low: 122.81,
+      close: 123.65,
+      volume: 4971936,
+    },
+    {
+      date: "2023-05-08T16:00:00.000000Z",
+      open: 123.76,
+      high: 123.92,
+      low: 122.55,
+      close: 123.4,
+      volume: 3663818,
+    },
+    {
+      date: "2023-05-09T16:00:00.000000Z",
+      open: 121.9,
+      high: 121.97,
+      low: 120.66,
+      close: 121.17,
+      volume: 4540047,
+    },
+    {
+      date: "2023-05-10T16:00:00.000000Z",
+      open: 121.99,
+      high: 122.49,
+      low: 121.1,
+      close: 122.02,
+      volume: 4189222,
+    },
+    {
+      date: "2023-05-11T16:00:00.000000Z",
+      open: 122.02,
+      high: 122.24,
+      low: 120.55,
+      close: 120.9,
+      volume: 3446452,
+    },
+    {
+      date: "2023-05-12T16:00:00.000000Z",
+      open: 121.41,
+      high: 122.86,
+      low: 121.11,
+      close: 122.84,
+      volume: 4564825,
+    },
     {
       date: "2023-05-15T16:00:00.000000Z",
       open: 123,
