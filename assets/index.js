@@ -201,9 +201,7 @@ const drawMAChart = (
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const historicalData = await fetch("/assets/data.json").then((res) =>
-    res.json()
-  );
+  const historicalData = await fetch("./data.json").then((res) => res.json());
 
   const movingAverage = historicalData.map((d) => d.close);
   const labels = historicalData.map((d) => d.date.split("T")[0]);
