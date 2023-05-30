@@ -1,0 +1,21 @@
+#chart-demo {
+  border: 1px solid #ccc;
+}
+body {
+  text-align: center;
+}
+
+.github-button {
+  padding: 10px;
+  margin: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  display: inline-block;
+  text-decoration: none;
+  color: #24292e;
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
