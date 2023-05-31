@@ -75,6 +75,10 @@ const drawMAChart = (
   const max = Math.ceil(Math.max(...values));
   const min = Math.floor(Math.min(...values));
 
+  // steps
+  const stepX = chart_width / (values.length - 1);
+  const stepY = chart_height / 5;
+
   // drawing chart title and subtitle
   ctx.save();
   ctx.fillStyle = "black";
@@ -111,8 +115,6 @@ const drawMAChart = (
   ctx.strokeStyle = "lightgray";
   ctx.setLineDash([5, 5]);
 
-  const stepY = chart_height / 5;
-
   for (let i = 0; i <= 5; i++) {
     ctx.moveTo(padding, padding + i * stepY);
     ctx.lineTo(padding + chart_width, padding + i * stepY);
@@ -124,8 +126,6 @@ const drawMAChart = (
   ctx.beginPath();
   ctx.strokeStyle = "lightgray";
   ctx.setLineDash([5, 5]);
-
-  const stepX = chart_width / (values.length - 1);
 
   for (let i = 0; i < values.length; i++) {
     ctx.moveTo(padding + i * stepX, padding);
@@ -194,7 +194,6 @@ const drawMAChart = (
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
 
     const stepX = chart_width / (values.length - 1);
 
