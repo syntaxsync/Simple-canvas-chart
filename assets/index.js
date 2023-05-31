@@ -24,6 +24,7 @@ const drawMAChart = (
     height: 400,
     strokeColor: "green",
     period: 20,
+    padding: 60,
   }
 ) => {
   const {
@@ -31,6 +32,7 @@ const drawMAChart = (
     height: canvas_height,
     strokeColor,
     period,
+    padding,
   } = options;
 
   const canvas = document.createElement("canvas");
@@ -47,7 +49,6 @@ const drawMAChart = (
 
   const ctx = canvas.getContext("2d");
 
-  const padding = 60;
   const chart_width = canvas_width - padding * 2;
   const chart_height = canvas_height - padding * 2;
 
@@ -498,5 +499,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     height: 400,
     strokeColor: "green",
     period: 20,
+    padding: 60,
   });
 });
