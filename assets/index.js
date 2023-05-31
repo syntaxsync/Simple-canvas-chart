@@ -220,6 +220,38 @@ const drawMAChart = (
 document.addEventListener("DOMContentLoaded", async () => {
   const historicalData = [
     {
+      date: "2023-04-11",
+      open: 130.58,
+      high: 131.1,
+      low: 130.18,
+      close: 130.42,
+      volume: 3132430,
+    },
+    {
+      date: "2023-04-12",
+      open: 130.4,
+      high: 130.89,
+      low: 128.17,
+      close: 128.54,
+      volume: 3957542,
+    },
+    {
+      date: "2023-04-13",
+      open: 128.01,
+      high: 128.39,
+      low: 126,
+      close: 127.9,
+      volume: 5621512,
+    },
+    {
+      date: "2023-04-14",
+      open: 128.46,
+      high: 129.84,
+      low: 127.31,
+      close: 128.14,
+      volume: 4180614,
+    },
+    {
       date: "2023-04-17",
       open: 128.3,
       high: 128.72,
