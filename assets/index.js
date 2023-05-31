@@ -3,8 +3,13 @@ const calculateMovingAverage = (data, period) => {
 
   for (let i = 0; i < data.length; i++) {
     if (i >= period) {
-      const sum = data.slice(i - period, i).reduce((a, b) => a + b, 0);
-      ma.push(sum / period);
+      const sum = data.slice(i - period, i).reduce((a, b) => {
+        return a + b.close;
+      }, 0);
+      ma.push({
+        ma: sum / period,
+        date: data[i].date,
+      });
     }
   }
 
@@ -14,7 +19,6 @@ const calculateMovingAverage = (data, period) => {
 const drawMAChart = (
   id,
   data,
-  labels,
   options = {
     width: 600,
     height: 400,
@@ -49,8 +53,21 @@ const drawMAChart = (
 
   // calculating moving average
 
-  const values = calculateMovingAverage(data, period);
-  const names = labels.slice(period);
+  const ma = calculateMovingAverage(data, period);
+
+  const { values, labels } = ma.reduce(
+    (accu, curr) => {
+      console.log(curr);
+      return {
+        values: [...accu.values, curr.ma],
+        labels: [...accu.labels, curr.date],
+      };
+    },
+    {
+      values: [],
+      labels: [],
+    }
+  );
 
   // calculating max and min values
 
@@ -116,7 +133,7 @@ const drawMAChart = (
 
   ctx.stroke();
 
-  // drawing names for y axis with markers on the left
+  // drawing labels for y axis with markers on the left
   ctx.beginPath();
   ctx.fillStyle = "black";
   ctx.font = "12px Arial";
@@ -129,18 +146,18 @@ const drawMAChart = (
     );
   }
 
-  // drawing names for x axis rotated 45 degrees
+  // drawing labels for x axis rotated 45 degrees
   ctx.fillStyle = "#000";
   ctx.font = "12px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
 
-  for (let i = 0; i < names.length; i++) {
+  for (let i = 0; i < labels.length; i++) {
     const x = stepX * i;
     ctx.save();
     ctx.translate(x + padding, canvas_height - padding + 5);
     ctx.rotate(Math.PI / 4);
-    ctx.fillText(names[i], 0, 0);
+    ctx.fillText(labels[i], 0, 0);
     ctx.restore();
   }
 
@@ -188,7 +205,7 @@ const drawMAChart = (
       toolkit.style.left = e.pageX + 10 + "px";
       toolkit.style.top = e.pageY + 10 + "px";
       toolkit.innerHTML = `<div>Date: ${
-        names[index]
+        labels[index]
       }</div><div>MA(20): ${value.toFixed(2)}</div>`;
     } else {
       toolkit.style.display = "none";
@@ -203,7 +220,7 @@ const drawMAChart = (
 document.addEventListener("DOMContentLoaded", async () => {
   const historicalData = [
     {
-      date: "2023-04-17T16:00:00.000000Z",
+      date: "2023-04-17",
       open: 128.3,
       high: 128.72,
       low: 126.8,
@@ -211,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3662666,
     },
     {
-      date: "2023-04-18T16:00:00.000000Z",
+      date: "2023-04-18",
       open: 128.14,
       high: 128.68,
       low: 127.35,
@@ -219,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3193787,
     },
     {
-      date: "2023-04-19T16:00:00.000000Z",
+      date: "2023-04-19",
       open: 126.5,
       high: 126.98,
       low: 125.3,
@@ -227,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 7014368,
     },
     {
-      date: "2023-04-20T16:00:00.000000Z",
+      date: "2023-04-20",
       open: 130.15,
       high: 130.98,
       low: 125.84,
@@ -235,7 +252,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 9749618,
     },
     {
-      date: "2023-04-21T16:00:00.000000Z",
+      date: "2023-04-21",
       open: 126,
       high: 126.7,
       low: 125.27,
@@ -243,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 6725426,
     },
     {
-      date: "2023-04-24T16:00:00.000000Z",
+      date: "2023-04-24",
       open: 125.55,
       high: 126.05,
       low: 124.56,
@@ -251,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4043892,
     },
     {
-      date: "2023-04-25T16:00:00.000000Z",
+      date: "2023-04-25",
       open: 124.9,
       high: 126.19,
       low: 124.76,
@@ -259,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4275396,
     },
     {
-      date: "2023-04-26T16:00:00.000000Z",
+      date: "2023-04-26",
       open: 125.81,
       high: 126.55,
       low: 125.12,
@@ -267,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4070168,
     },
     {
-      date: "2023-04-27T16:00:00.000000Z",
+      date: "2023-04-27",
       open: 126.37,
       high: 127.02,
       low: 125.46,
@@ -275,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3204889,
     },
     {
-      date: "2023-04-28T16:00:00.000000Z",
+      date: "2023-04-28",
       open: 126.58,
       high: 127.25,
       low: 125.64,
@@ -283,7 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 5061247,
     },
     {
-      date: "2023-05-01T16:00:00.000000Z",
+      date: "2023-05-01",
       open: 126.35,
       high: 126.75,
       low: 126.06,
@@ -291,7 +308,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 2724992,
     },
     {
-      date: "2023-05-02T16:00:00.000000Z",
+      date: "2023-05-02",
       open: 126.3,
       high: 126.45,
       low: 123.27,
@@ -299,7 +316,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4445283,
     },
     {
-      date: "2023-05-03T16:00:00.000000Z",
+      date: "2023-05-03",
       open: 125.46,
       high: 125.57,
       low: 123.26,
@@ -307,7 +324,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4554212,
     },
     {
-      date: "2023-05-04T16:00:00.000000Z",
+      date: "2023-05-04",
       open: 123.03,
       high: 123.52,
       low: 121.76,
@@ -315,7 +332,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4468237,
     },
     {
-      date: "2023-05-05T16:00:00.000000Z",
+      date: "2023-05-05",
       open: 123.11,
       high: 124.1,
       low: 122.81,
@@ -323,7 +340,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4971936,
     },
     {
-      date: "2023-05-08T16:00:00.000000Z",
+      date: "2023-05-08",
       open: 123.76,
       high: 123.92,
       low: 122.55,
@@ -331,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3663818,
     },
     {
-      date: "2023-05-09T16:00:00.000000Z",
+      date: "2023-05-09",
       open: 121.9,
       high: 121.97,
       low: 120.66,
@@ -339,7 +356,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4540047,
     },
     {
-      date: "2023-05-10T16:00:00.000000Z",
+      date: "2023-05-10",
       open: 121.99,
       high: 122.49,
       low: 121.1,
@@ -347,7 +364,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4189222,
     },
     {
-      date: "2023-05-11T16:00:00.000000Z",
+      date: "2023-05-11",
       open: 122.02,
       high: 122.24,
       low: 120.55,
@@ -355,7 +372,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3446452,
     },
     {
-      date: "2023-05-12T16:00:00.000000Z",
+      date: "2023-05-12",
       open: 121.41,
       high: 122.86,
       low: 121.11,
@@ -363,7 +380,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4564825,
     },
     {
-      date: "2023-05-15T16:00:00.000000Z",
+      date: "2023-05-15",
       open: 123,
       high: 123.69,
       low: 122.34,
@@ -371,7 +388,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 2915725,
     },
     {
-      date: "2023-05-16T16:00:00.000000Z",
+      date: "2023-05-16",
       open: 123.35,
       high: 123.86,
       low: 122.45,
@@ -379,7 +396,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 2749125,
     },
     {
-      date: "2023-05-17T16:00:00.000000Z",
+      date: "2023-05-17",
       open: 123.94,
       high: 125.85,
       low: 123.47,
@@ -387,7 +404,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4515134,
     },
     {
-      date: "2023-05-18T16:00:00.000000Z",
+      date: "2023-05-18",
       open: 125.3,
       high: 126.51,
       low: 125.19,
@@ -395,7 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3797883,
     },
     {
-      date: "2023-05-19T16:00:00.000000Z",
+      date: "2023-05-19",
       open: 126.79,
       high: 128.29,
       low: 126.55,
@@ -403,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4306657,
     },
     {
-      date: "2023-05-22T16:00:00.000000Z",
+      date: "2023-05-22",
       open: 127.5,
       high: 128.19,
       low: 127.15,
@@ -411,7 +428,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 2806770,
     },
     {
-      date: "2023-05-23T16:00:00.000000Z",
+      date: "2023-05-23",
       open: 127.24,
       high: 129.09,
       low: 127.13,
@@ -419,7 +436,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4592280,
     },
     {
-      date: "2023-05-24T16:00:00.000000Z",
+      date: "2023-05-24",
       open: 127.82,
       high: 127.9,
       low: 125.47,
@@ -427,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 3915505,
     },
     {
-      date: "2023-05-25T16:00:00.000000Z",
+      date: "2023-05-25",
       open: 125.61,
       high: 127.23,
       low: 125.01,
@@ -435,7 +452,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       volume: 4102854,
     },
     {
-      date: "2023-05-26T16:00:00.000000Z",
+      date: "2023-05-26",
       open: 127.06,
       high: 129.66,
       low: 126.81,
@@ -444,10 +461,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
   ];
 
-  const movingAverage = historicalData.map((d) => d.close);
-  const labels = historicalData.map((d) => d.date.split("T")[0]);
-
-  drawMAChart("chart-demo", movingAverage, labels, {
+  drawMAChart("chart-demo", historicalData, {
     width: 600,
     height: 400,
     strokeColor: "green",
