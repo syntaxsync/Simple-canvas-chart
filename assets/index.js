@@ -89,7 +89,7 @@ const drawMAChart = (
 
   ctx.font = "12px Arial";
   ctx.fillText(
-    "IBM, 2023-04-15 to 2023-05-31",
+    "IBM, 2023-04-09 to 2023-05-31",
     canvas_width / 2,
     padding / 2 + 20
   );
