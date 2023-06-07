@@ -25,6 +25,7 @@ const drawMAChart = (
     strokeColor: "green",
     period: 20,
     padding: 60,
+    stepOnYAxis: 10,
   }
 ) => {
   const {
@@ -33,6 +34,7 @@ const drawMAChart = (
     strokeColor,
     period,
     padding,
+    stepOnYAxis,
   } = options;
 
   const canvas = document.createElement("canvas");
@@ -58,7 +60,6 @@ const drawMAChart = (
 
   const { values, labels } = ma.reduce(
     (accu, curr) => {
-      console.log(curr);
       return {
         values: [...accu.values, curr.ma],
         labels: [...accu.labels, curr.date],
@@ -77,7 +78,7 @@ const drawMAChart = (
 
   // steps
   const stepX = chart_width / (values.length - 1);
-  const stepY = chart_height / 5;
+  const stepY = chart_height / stepOnYAxis;
 
   // drawing chart title and subtitle
   ctx.save();
@@ -115,7 +116,7 @@ const drawMAChart = (
   ctx.strokeStyle = "lightgray";
   ctx.setLineDash([5, 5]);
 
-  for (let i = 0; i <= 5; i++) {
+  for (let i = 0; i <= stepOnYAxis; i++) {
     ctx.moveTo(padding, padding + i * stepY);
     ctx.lineTo(padding + chart_width, padding + i * stepY);
   }
@@ -139,9 +140,9 @@ const drawMAChart = (
   ctx.fillStyle = "black";
   ctx.font = "12px Arial";
 
-  for (let i = 0; i <= 5; i++) {
+  for (let i = 0; i <= stepOnYAxis; i++) {
     ctx.fillText(
-      (max - (max - min) * (i / 5)).toFixed(1),
+      (max - (max - min) * (i / stepOnYAxis)).toFixed(1),
       30,
       padding + i * stepY
     );
@@ -499,5 +500,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     strokeColor: "green",
     period: 20,
     padding: 60,
+    stepOnYAxis: 6,
   });
 });
