@@ -20,7 +20,7 @@ body {
   cursor: pointer;
 }
 
-.toolkit {
+.tooltip {
   position: absolute;
   padding: 10px;
   background-color: #eee;

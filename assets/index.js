@@ -44,10 +44,10 @@ const drawMAChart = (
 
   document.body.appendChild(canvas);
 
-  const toolkit = document.createElement("div");
-  toolkit.className = "toolkit";
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
 
-  document.body.appendChild(toolkit);
+  document.body.appendChild(tooltip);
 
   const ctx = canvas.getContext("2d");
 
@@ -191,7 +191,7 @@ const drawMAChart = (
 
   ctx.stroke();
 
-  // adding event listeners in the above toolkit on values points
+  // adding event listeners in the above tooltip on values points
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -202,19 +202,19 @@ const drawMAChart = (
     const value = values[index];
 
     if (value) {
-      toolkit.style.display = "block";
-      toolkit.style.left = e.pageX + 10 + "px";
-      toolkit.style.top = e.pageY + 10 + "px";
-      toolkit.innerHTML = `<div>Date: ${
+      tooltip.style.display = "block";
+      tooltip.style.left = e.pageX + 10 + "px";
+      tooltip.style.top = e.pageY + 10 + "px";
+      tooltip.innerHTML = `<div>Date: ${
         labels[index]
       }</div><div>MA(20): ${value.toFixed(2)}</div>`;
     } else {
-      toolkit.style.display = "none";
+      tooltip.style.display = "none";
     }
   });
 
   canvas.addEventListener("mouseleave", () => {
-    toolkit.style.display = "none";
+    tooltip.style.display = "none";
   });
 };
 
