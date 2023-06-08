@@ -191,25 +191,34 @@ const drawMAChart = (
 
   ctx.stroke();
 
-  // adding event listeners in the above tooltip on values points
+  // adding event listeners to show data in the above tooltip on green markers only
   canvas.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    const x = e.offsetX;
+    const y = e.offsetY;
 
-    const stepX = chart_width / (values.length - 1);
+    for (let i = 0; i < values.length; i++) {
+      const markerX = stepX * i;
+      const markerY = (chart_height * (max - values[i])) / (max - min);
 
-    const index = Math.floor((x - padding) / stepX);
-    const value = values[index];
-
-    if (value) {
-      tooltip.style.display = "block";
-      tooltip.style.left = e.pageX + 10 + "px";
-      tooltip.style.top = e.pageY + 10 + "px";
-      tooltip.innerHTML = `<div>Date: ${
-        labels[index]
-      }</div><div>MA(20): ${value.toFixed(2)}</div>`;
-    } else {
-      tooltip.style.display = "none";
+      if (
+        x >= padding + markerX - 5 &&
+        x <= padding + markerX + 5 &&
+        y >= padding + markerY - 5 &&
+        y <= padding + markerY + 5
+      ) {
+        tooltip.style.display = "block";
+        tooltip.style.top = `${e.pageY}px`;
+        tooltip.style.left = `${e.pageX}px`;
+        tooltip.innerHTML = `
+          <div>
+            <div>Date: ${labels[i]}</div>
+            <div>MA: ${values[i].toFixed(2)}</div>
+          </div>
+        `;
+        break;
+      } else {
+        tooltip.style.display = "none";
+      }
     }
   });
 

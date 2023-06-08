@@ -1,8 +1,10 @@
 #chart-demo {
   border: 1px solid #ccc;
+  position: relative;
 }
 body {
   text-align: center;
+  position: relative;
 }
 
 .github-button {
